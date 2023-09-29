@@ -1,4 +1,4 @@
-void slowServo(int servo, int openDistance, int speed);
+void timeServo(int port, int endAngle, float time);
 void startup();
 void turnDegrees();
 void line_follow();

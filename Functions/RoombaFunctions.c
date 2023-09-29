@@ -4,34 +4,33 @@
 //In main.c, add:
 //#include "functions.h"
 
-void slowServo(int servo, int endAngle, int speed) //Slowly controls the servo to move to the correct position at the correct speed.
+void timeServo(int port, int endAngle, float time) //Moves servo in "port" to "endangle" in "time" seconds.
 {
-  if (get_servo_position(servo) > endAngle)
+  enable_servo(port);
+  int segment = 100; // Determines how many 'segments' the movement should be broken into, is arbitrary.
+  int position = get_servo_position(port);
+  // Equasion to find delay is the abs of the endAngle - the position, / milliseconds. (This may need tweaking.)
+  int moveSegments = (endAngle-position)/segment;
+  int timeSegments = time*1000/segment; // Milliseconds divided by segments.
+  if(endAngle > position)
   {
-	   enable_servo(servo);
-     while (get_servo_position(servo) > endAngle)
-		   {
-
-  			set_servo_position(servo, get_servo_position(servo)-2);
-  			msleep(speed);
-
-
-		   }
-	  ao();
-  }
-  else if (get_servo_position(servo) < endAngle)
+    while(endAngle > position) // Move servo negatively
     {
-	   enable_servo(servo);
-     while (get_servo_position(servo) < endAngle)
-		   {
-
-  			set_servo_position(servo, get_servo_position(servo)+2);
-  			msleep(speed);
-
-
-		    }
-	   ao();
+      msleep(timeSegments);
+      set_servo_position(port, position+moveSegments);
+      position = get_servo_position(port);
     }
+  }
+  else
+  {
+    while(endAngle < position) // Move servo positively
+    {
+      msleep(timeSegments);
+      set_servo_position(port, position+moveSegments);
+      position = get_servo_position(port);
+    }
+  }
+    ao();
 }
 
 void startup()
@@ -43,8 +42,8 @@ void startup()
 
 void turnDegrees(int deg)
 {
-   	set_create_total_angle(0);
-	if (deg>0)
+   set_create_total_angle(0);
+	if (deg>0) // Right turn
     {
     while (get_create_total_angle() >= deg*-1)
     	{
@@ -52,7 +51,7 @@ void turnDegrees(int deg)
     	}
     ao();
     }
-    else if (deg<0)
+    else if (deg<0) // Left turn
     {
         while (get_create_total_angle() <= deg*-1)
     	{
