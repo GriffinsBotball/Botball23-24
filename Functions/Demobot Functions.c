@@ -6,8 +6,8 @@
 int leftMotor = 0;
 int rightMotor = 1;
 int motorSpeed = 50;
-int stepFactor = 200; // Default for traditional demobot, controls the motor position it will drive. (default:200)
-int turnDegrees = 26.11; //Default for traditional demobot, controls the amount of degrees it will drive.
+int stepFactor = 508; // Default for traditional demobot, controls the motor position it will drive. (default:200 [cm]) 
+int rotationalDegrees = 26.11; //Default for traditional demobot is 26.11, controls the amount of degrees it will drive.
 //Sensors
 int leftBumper = 0;
 int rightBumper = 1;
@@ -35,22 +35,33 @@ void driveDistance(int distance) // Drives forward for value int "distance". If 
     cmpc(rightMotor);
     if(distance>0)
     {
-      while(gmpc(rightMotor)<stepFactor*distance || gmpc(leftMotor)<stepFactor*distance) //Makes straight line with set number of inches
+      while(gmpc(rightMotor)<stepFactor*distance || gmpc(leftMotor)<stepFactor*distance) //Makes straight line with set number of cm
       {
-        motor(leftMotor, motorSpeed);
-        motor(rightMotor, motorSpeed);
+        if((gmpc(leftMotor)<stepFactor*distance )
+        {
+          motor(leftMotor, motorSpeed);
+        }
+        if(gmpc(rightMotor)<stepFactor*distance)
+        {
+          motor(rightMotor, motorSpeed);
+        }
       }
     }
     else
     {
-      while(gmpc(rightMotor)>stepFactor*distance || gmpc(leftMotor)*stepFactor*distance) //Makes straight line with set number of inches
+      while(gmpc(rightMotor)>stepFactor*distance || gmpc(leftMotor)*stepFactor*distance) //Makes straight line with set number of cm
       {
-        motor(leftMotor, -motorSpeed);
-        motor(rightMotor, -motorSpeed);
+        if(gmpc(leftMotor)*stepFactor*distance)
+        {
+          motor(leftMotor, -motorSpeed);
+        }
+        if(gmpc(rightMotor)>stepFactor*distance)
+        {
+          motor(rightMotor, -motorSpeed);
+        }
       }
     }
     ao();
-
 }
 
 
@@ -201,7 +212,7 @@ void turnDegrees(int degrees) // Turn a specified number of degrees
   cmpc(rightMotor);
   if (degrees>0) // A right turn
   {
-    while(gmpc(leftMotor)<=turnDegrees*degrees) //Turning right, measure the motor that moves, which is the opposite to the direction of movement
+    while(gmpc(leftMotor)<=rotationalDegrees*degrees) //Turning right, measure the motor that moves, which is the opposite to the direction of movement
     {
       motor(rightMotor,1);
       motor(leftMotor, motorSpeed);
@@ -209,7 +220,7 @@ void turnDegrees(int degrees) // Turn a specified number of degrees
   }
   else // A left turn
   {
-    while (gmpc(rightMotor)>=turnDegrees*degrees) // Turning left
+    while (gmpc(rightMotor)>=rotationalDegrees*degrees) // Turning left
       {
         motor(rightMotor, motorSpeed*-1);
         motor(leftMotor,1);
