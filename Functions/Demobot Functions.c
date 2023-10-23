@@ -6,8 +6,12 @@
 int leftMotor = 0;
 int rightMotor = 1;
 int motorSpeed = 50;
-int stepFactor = 508; // Default for traditional demobot, controls the motor position it will drive. (default:200 [cm]) 
+int stepFactor = 508; // Default for traditional demobot, controls the motor position it will drive. (default:508 [cm]) 
 int rotationalDegrees = 26.11; //Default for traditional demobot is 26.11, controls the amount of degrees it will drive.
+
+// Adjustment for motors
+int rightAdjustment = 0;
+int leftAdjustment = 0;
 //Sensors
 int leftBumper = 0;
 int rightBumper = 1;
@@ -37,13 +41,13 @@ void driveDistance(int distance) // Drives forward for value int "distance". If 
     {
       while(gmpc(rightMotor)<stepFactor*distance || gmpc(leftMotor)<stepFactor*distance) //Makes straight line with set number of cm
       {
-        if((gmpc(leftMotor)<stepFactor*distance )
+        if((gmpc(leftMotor)<stepFactor*distance ))
         {
-          motor(leftMotor, motorSpeed);
+          motor(leftMotor, motorSpeed+leftAdjustment);
         }
         if(gmpc(rightMotor)<stepFactor*distance)
         {
-          motor(rightMotor, motorSpeed);
+          motor(rightMotor, motorSpeed+rightAdjustment);
         }
       }
     }
@@ -53,11 +57,11 @@ void driveDistance(int distance) // Drives forward for value int "distance". If 
       {
         if(gmpc(leftMotor)*stepFactor*distance)
         {
-          motor(leftMotor, -motorSpeed);
+          motor(leftMotor, -motorSpeed-leftAdjustment);
         }
         if(gmpc(rightMotor)>stepFactor*distance)
         {
-          motor(rightMotor, -motorSpeed);
+          motor(rightMotor, -motorSpeed-rightAdjustment);
         }
       }
     }
@@ -228,3 +232,4 @@ void turnDegrees(int degrees) // Turn a specified number of degrees
   }
   ao();
 }
+
