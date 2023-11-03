@@ -6,7 +6,7 @@
 int leftMotor = 0;
 int rightMotor = 1;
 int motorSpeed = 50;
-int stepFactor = 508; // Default for traditional demobot, controls the motor position it will drive. (default:508 [cm]) 
+int stepFactor = 78.7; // Default for traditional demobot, controls the motor position it will drive. (default:508 [cm]) 
 int rotationalDegrees = 26.11; //Default for traditional demobot is 26.11, controls the amount of degrees it will drive.
 
 // Adjustment for motors
@@ -186,8 +186,8 @@ void timeServo(int port, int endAngle, float time) //Moves servo in "port" to "e
   int segment = 100; // Determines how many 'segments' the movement should be broken into, is arbitrary.
   int position = get_servo_position(port);
   // Equasion to find delay is the abs of the endAngle - the position, / milliseconds. (This may need tweaking.)
-  int moveSegments = (endAngle-position)/segment;
-  int timeSegments = time*1000/segment; // Milliseconds divided by segments.
+  int moveSegments = ((endAngle-position)/segment);
+  int timeSegments = (time*1000/segment) + 0.00000001; // Milliseconds divided by segments. Adding a very small amount because this seems to fix some random problems.
   if(endAngle > position)
   {
     while(endAngle > position) // Move servo negatively
@@ -197,7 +197,7 @@ void timeServo(int port, int endAngle, float time) //Moves servo in "port" to "e
       position = get_servo_position(port);
     }
   }
-  else
+  else if(endAngle < position)
   {
     while(endAngle < position) // Move servo positively
     {
