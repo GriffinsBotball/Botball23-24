@@ -22,15 +22,24 @@ int rightRearBumper = 5;
 int blackLine = 0; //Should be set to the value of a black line with the Infared sensor. Needs to be set, more often the better.
 
 
-void blackLineDetect(int shade) //back up till the tophat is on black which is value int "shade"
+void blackLineDetect(int shade) //drive till the tophat is on black which is value int "shade"
 {
     while(analog(infaredSensor) <= shade)
     {
-        motor(leftMotor, -motorSpeed);
-        motor(rightMotor, -motorSpeed);
+        motor(leftMotor, motorSpeed+leftAdjustment);
+        motor(rightMotor, motorSpeed+rightAdjustment);
     }
 }
 
+void blackLineDetectReverse(int shade) //Drive backwards until the tophat is on black("shade")
+{
+    while(analog(infaredSensor) <= shade)
+    {
+        motor(leftMotor, -motorSpeed-leftAdjustment);
+        motor(rightMotor, -motorSpeed-rightAdjustment);
+    }
+    ao();
+}
 
 void driveDistance(int distance) // Drives forward for value int "distance". If distance is negative, drive backwards.
 {
@@ -53,9 +62,9 @@ void driveDistance(int distance) // Drives forward for value int "distance". If 
     }
     else
     {
-      while(gmpc(rightMotor)>stepFactor*distance || gmpc(leftMotor)*stepFactor*distance) //Makes straight line with set number of cm
+      while(gmpc(rightMotor)>stepFactor*distance || gmpc(leftMotor)>stepFactor*distance) //Makes straight line with set number of cm
       {
-        if(gmpc(leftMotor)*stepFactor*distance)
+        if(gmpc(leftMotor)>stepFactor*distance)
         {
           motor(leftMotor, -motorSpeed-leftAdjustment);
         }
@@ -150,7 +159,7 @@ void lineFollowSquareReverse(int shade) // Back up until you are alligned to the
 
 void squareUp() // Square up by driving forward
 {
-	while(digital(leftBumper) == 0 && digital(rightBumper) == 0)
+	while(digital(leftBumper) == 0 || digital(rightBumper) == 0)
     {
       if(digital(leftBumper)==0)
       {
@@ -166,7 +175,7 @@ void squareUp() // Square up by driving forward
 
 void squareUpReverse() // Square up by backing up
 {
-	while(digital(leftRearBumper) == 0 && digital(rightRearBumper) == 0)
+	while(digital(leftRearBumper) == 0 || digital(rightRearBumper) == 0)
     {
         if(digital(leftBumper)==0)
       {
@@ -188,7 +197,10 @@ void timeServo(int port, int endAngle, float time) //Moves servo in "port" to "e
   // Equasion to find delay is the abs of the endAngle - the position, / milliseconds. (This may need tweaking.)
   int moveSegments = ((endAngle-position)/segment);
   int timeSegments = (time*1000/segment) + 0.00000001; // Milliseconds divided by segments. Adding a very small amount because this seems to fix some random problems.
-  if(endAngle > position)
+  if (endangle == position)
+  {
+  }
+  else if(endAngle > position)
   {
     while(endAngle > position) // Move servo negatively
     {
@@ -224,12 +236,19 @@ void turnDegrees(int degrees) // Turn a specified number of degrees
   }
   else // A left turn
   {
-    while (gmpc(rightMotor)>=rotationalDegrees*degrees) // Turning left
+    while (gmpc(rightMotor)<=rotationalDegrees*degrees*-1) // Turning left
       {
-        motor(rightMotor, motorSpeed*-1);
+        motor(rightMotor, motorSpeed);
         motor(leftMotor,1);
       }
   }
   ao();
 }
 
+void servoPosition(int servo, int position)
+{
+  enable_servos();
+  set_servo_position(servo, position);
+  disable_servos();
+  ao();
+}

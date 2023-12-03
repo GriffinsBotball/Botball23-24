@@ -1,4 +1,5 @@
 void blackLineDetect(int shade);
+void blackLineDetectReverse(int shade);
 void driveDistance(int distance);
 void lineFollow(int shade);
 void lineFollowSquare();
@@ -7,3 +8,4 @@ void squareUp();
 void squareUpReverse();
 void timeServo(int port, int endAngle, float time);
 void turnDegrees(int degrees);
+void servoPosition(int servo, int position);
