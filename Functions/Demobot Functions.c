@@ -206,35 +206,28 @@ void servoPosition(int servo, int position)
   ao();
 }
 
-void timeServo(int port, int endAngle, float time) //Moves servo in "port" to "endangle" in "time" seconds.
+void timeServo(int port, int endAngle, int time) //Moves servo in "port" to position"endangle" in "time" milliseconds.
 {
-  enable_servo(port);
-  int segment = 100; // Determines how many 'segments' the movement should be broken into, is arbitrary.
-  int position = get_servo_position(port);
-  // Equation to find delay is the abs of the endAngle - the position, / milliseconds. (This may need tweaking.)
-  int moveSegments = ((endAngle-position)/segment);
-  int timeSegments = (time*1000/segment) + 0.00000001; // Milliseconds divided by segments. Adding a very small amount because this seems to fix some random problems.
-  if(endAngle > position)
-  {
-    while(endAngle > position) // Move servo negatively
+    enable_servos();
+    int servoPosition = get_servo_position(port);
+    int currentSegment = 0; //Which segment the program is currently on. Contrasted with segment count.
+    
+    int segmentCount = 100; //Works with value 100.
+    float timeSegment = (time/segmentCount);
+    float movementSegment = ((endAngle-servoPosition)/segmentCount);
+    
+    while(currentSegment < segmentCount)
     {
-      msleep(timeSegments);
-      set_servo_position(port, position+moveSegments);
-      position = get_servo_position(port);
+    servoPosition = get_servo_position(port);
+    msleep(timeSegment);
+    set_servo_position(port,servoPosition+movementSegment);
+    currentSegment += 1;
     }
-  }
-  else if(endAngle < position)
-  {
-    while(endAngle < position) // Move servo positively
-    {
-      msleep(timeSegments);
-      set_servo_position(port, position+moveSegments);
-      position = get_servo_position(port);
-    }
-  }
+    
+    set_servo_position(port, endAngle);
+    disable_servos();
     ao();
 }
-
 
 void turnDegrees(int degrees) // Turn a specified number of degrees
 {
