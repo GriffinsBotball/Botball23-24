@@ -6,8 +6,8 @@
 int leftMotor = 0;
 int rightMotor = 1;
 int motorSpeed = 100;
-int stepFactor = 78.7; // Default for traditional demobot, controls the motor position it will drive. (default:508[cm]) 
-int rotationalDegrees = 26.11; //Default for traditional demobot is 26.11, controls the amount of degrees it will drive.
+double stepFactor = 78.7; // Default for traditional demobot, controls the motor position it will drive. (default:508[cm]) 
+double rotationalDegrees = 26.11; //Default for traditional demobot is 26.11, controls the amount of degrees it will drive.
 
 // Adjustment for motors
 int rightAdjustment = 0;
@@ -98,32 +98,33 @@ void lineFollow(int shade) // Follow a line with a darkness value of int "shade"
  }
 
 
-void lineFollowSquare() // Square up by following a line
+void lineFollowSquareUp(int shade) // Square up by following a line
 {
     while(digital(leftBumper) == 0 && digital(rightBumper) == 0)
     {
    	  	if (digital(leftBumper) == 1 || digital(rightBumper) == 1)
-     {
+      {
          if (digital(leftBumper) == 1)
-         {
+          {
            motor(leftMotor, 100);
-         }
+          }
          else
-         	{
+          {
             motor(rightMotor, 100);
           }
       }
-       	else if (analog(infaredSensor) >= 3650)
+       	else if (analog(infaredSensor) >= shade)
      		{
           motor(leftMotor, 25);
           motor(rightMotor, motorSpeed);
        	}
-     	 	else if (analog(infaredSensor) < 3650)
+     	 	else if (analog(infaredSensor) < shade)
       	{
           motor(leftMotor, motorSpeed);
       	  motor(rightMotor, 25);
      	  }
     }
+    ao();
 }
 
 
@@ -143,13 +144,13 @@ void lineFollowSquareReverse(int shade) // Back up until you are alligned to the
             motor(rightMotor, 0);
      	}
 
-        else if (analog(1) > shade)
+        else if (analog(infaredSensor) > shade)
     	{
         motor(leftMotor, -40);
     	motor(rightMotor, -motorSpeed);
      	}
 
-     	else if (analog(1) <= shade)
+     	else if (analog(infaredSensor) <= shade)
    		{
         motor(leftMotor, -motorSpeed);
         motor(rightMotor, -40);
@@ -160,7 +161,7 @@ void lineFollowSquareReverse(int shade) // Back up until you are alligned to the
 
 void squareUp() // Square up by driving forward
 {
-	while(digital(leftBumper) == 0 && digital(rightBumper) == 0)
+	while(digital(leftBumper) == 0 || digital(rightBumper) == 0)
     {
       if(digital(leftBumper)==0)
       {
@@ -206,7 +207,7 @@ void servoPosition(int servo, int position)
   ao();
 }
 
-void timeServo(int port, int endAngle, int time) //Moves servo in "port" to position"endangle" in "time" milliseconds.
+void timeServo(int port, int endAngle, float time) //Moves servo in "port" to position "endangle" in "time" milliseconds.
 {
     enable_servos();
     int servoPosition = get_servo_position(port);

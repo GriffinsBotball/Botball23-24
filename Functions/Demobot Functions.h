@@ -2,7 +2,7 @@ void blackLineDetect(int shade);
 void blackLineDetectReverse(int shade);
 void driveDistance(int distance);
 void lineFollow(int shade);
-void lineFollowSquare();
+void lineFollowSquareUp(int shade);
 void lineFollowSquareReverse(int shade);
 void squareUp();
 void squareUpReverse();
