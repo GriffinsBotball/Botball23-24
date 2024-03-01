@@ -117,9 +117,10 @@ void lineFollowCliff(int threshold, int milliseconds) {
     msleep(100);
     }}
 
-void driveDistance(int dis) //Makes robot drive forward for a set number of inches.
+void driveDistance(int dis) //Makes robot drive forward for a set number of cm.
 {
     set_create_distance(0);
+    dis = dis*10;
     if (dis>0)
     {
       while(get_create_distance() > -(dis))
@@ -138,8 +139,9 @@ void driveDistance(int dis) //Makes robot drive forward for a set number of inch
 	     }
 }
 
-void driveDistancefast(int dis) //Makes robot drive forward for a set number of inches.
+void driveDistancefast(int dis) //Makes robot drive forward for a set number of cm.
 {
+    dis = dis*10;
     set_create_distance(0);
     if (dis>0)
     {
