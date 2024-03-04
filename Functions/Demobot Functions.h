@@ -9,3 +9,4 @@ void squareUpReverse();
 void servoPosition(int servo, int position);
 void timeServo(int port, int endAngle, float time);
 void turnDegrees(int degrees);
+void driveDistanceSpeed(int distance, int LWheelspeed, int RWheelspeed);

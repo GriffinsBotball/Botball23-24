@@ -252,3 +252,39 @@ void turnDegrees(int degrees) // Turn a specified number of degrees
   }
   ao();
 }
+
+void driveDistanceSpeed(int distance, int LWheelspeed, int RWheelspeed);
+{
+  // May be having some problems based on hardware configuration.
+    cmpc(leftMotor);
+    cmpc(rightMotor);
+    if(distance>0)
+    {
+      while(gmpc(rightMotor)<stepFactor*distance || gmpc(leftMotor)<stepFactor*distance) //Makes straight line with set number of cm
+      {
+        if((gmpc(leftMotor)<stepFactor*distance ))
+        {
+          motor(leftMotor, LWheelspeed);
+        }
+        if(gmpc(rightMotor)<stepFactor*distance)
+        {
+          motor(rightMotor, RWheelspeed);
+        }
+      }
+    }
+    else
+    {
+      while(gmpc(rightMotor)>stepFactor*distance || gmpc(leftMotor)>stepFactor*distance) //Makes straight line with set number of cm
+      {
+        if(gmpc(leftMotor)>stepFactor*distance)
+        {
+          motor(leftMotor, -LWheelspeed);
+        }
+        if(gmpc(rightMotor)>stepFactor*distance)
+        {
+          motor(rightMotor, -RWheelspeed);
+        }
+      }
+    }
+    ao();
+}

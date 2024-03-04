@@ -1,5 +1,6 @@
 #include <kipr/wombat.h>
 #include <sys/time.h>
+#include "Create3Functions.h"
 
 //In main.c, add:
 //#include "functions.h"
